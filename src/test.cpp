@@ -1,14 +1,23 @@
-// array::fill example
+// vector::push_back
 #include <iostream>
-#include <array>
+#include <vector>
 
-int main2() {
-  std::array<int,6> myarray;
-  myarray.fill(5);
+int main ()
+{
+  std::vector<int> myvector;
+  int myint;
 
-  std::cout << "myarray contains:";
-  for ( int& x : myarray) { std::cout << ' ' << x; }
+  std::cout << "Please enter some integers (enter 0 to end):\n";
 
+  do {
+    std::cin >> myint;
+    myvector.push_back (myint);
+  } while (myint);
+
+  std::cout << "myvector stores " << int(myvector.size()) << " numbers.\n";
+  std::cout << "myvector contains:";
+  for (auto& x: myvector)
+    std::cout << ' ' << x;
   std::cout << '\n';
 
   return 0;
