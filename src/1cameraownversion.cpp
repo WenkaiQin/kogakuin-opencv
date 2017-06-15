@@ -18,16 +18,19 @@ using namespace std;
 using namespace cv;
 
 // 抽出したい色の指定
-Mat g_min(1, 1, CV_8UC3, Scalar(30,70,30));
-Mat g_max(1, 1, CV_8UC3, Scalar(70,255,255));
+Scalar g_min(30,70,30);
+Scalar g_max(70,255,255);
+
+// Mat g_min(1, 1, CV_8UC3, Scalar(0,175,0));
+// Mat g_max(1, 1, CV_8UC3, Scalar(32,255,73));
 
 // 膨張化用のカーネル
 Mat k = Mat::ones(5, 5, CV_8UC1);
 
 bool DEBUG = false;
+bool LIVEFEED = false;
 
-
-Mat colorTrack(Mat& im, Mat& h_min, Mat& h_max) {
+Mat colorTrack(Mat& im, Scalar h_min, Scalar h_max) {
 	Mat im_h, mask, im_c;
 	int iterations = 2;
 	cvtColor(im, im_h, COLOR_BGR2HSV);		// RGB色空間からHSV色空間に変換
@@ -79,7 +82,7 @@ array<vector<int>,2> where255(Mat& mask) {
 }
 
 
-int main() {
+int main(int argc, char** argv) {
 
 	Mat im, mask1, mask2, mask;
 	vector<vector<Point> > cnt, hull;
@@ -94,7 +97,7 @@ int main() {
 	while(1) {
 
 		// 入力画像の取得
-		cap >> im;
+		if(LIVEFEED) cap >> im; else im = imread("online.jpg");
 
 		// 紅色のカラートラッキング
 		mask1 = colorTrack(im, g_min, g_max);
@@ -171,12 +174,12 @@ int main() {
 
 
 		// キーが押されたらループから抜ける
-		if(waitKey(10) > 0){
+		if(waitKey(10) == 27){
 			cap.release();
 			destroyAllWindows();
 			break;
 		}
-		
+
 	}
 
 	return 0;

@@ -1,11 +1,11 @@
-# 1cameradepth.py
-
 # -*- coding: utf-8 -*-
 import cv2
 import numpy as np
 import time
 import math as m
 from numpy import*
+# import matplotlib.pyplot as plt
+# from mpl_toolkits.mplot3d import Axes3D
 
 # 抽出したい色の指定
 g_min = np.array([30,70,30])
@@ -13,7 +13,11 @@ g_max = np.array([70,255,255])
 # 膨張化用のカーネル
 k = np.ones((5,5),np.uint8)
 
+LIVEFEED = False;
+
+#===== カラートラッキング(緑色)
 def color_track(im,h_min,h_max):
+
     im_h = cv2.cvtColor(im,cv2.COLOR_BGR2HSV)  # RGB色空間からHSV色空間に変換
     mask = cv2.inRange(im_h,h_min,h_max,)       # マスク画像の生成
     #mask = cv2.medianBlur(mask,7)               # 平滑化
@@ -21,6 +25,7 @@ def color_track(im,h_min,h_max):
     #im_c = cv2.bitwise_and(im,im,mask=mask)     # 色領域抽出
     return mask#,im_c
 
+#===== 要素数が最大のインデックス
 def index_emax(cnt):
     max_num = 0
     max_i = -1
@@ -32,22 +37,28 @@ def index_emax(cnt):
 
     return max_i
 
+#===== Main
 def main():
 
     h1 = 175
     L1 = 700
     H = 167 #緑色のボトルの実際の高さ[mm]
     Z = 0
+    
     cap = cv2.VideoCapture(0)
 
     while True:
         # 入力画像の取得
-        im = cap.read()[1]
+        if LIVEFEED:
+            im = cap.read()[1]
+        else:
+            im = cv2.imread("online.jpg")
         # 紅色のカラートラッキング
         mask1 = color_track(im,g_min,g_max)
         mask2 = color_track(im,g_min,g_max)
         # 紅色領域の輪郭を抽出
         cnt = cv2.findContours(mask2,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)[0]
+
         n = index_emax(cnt)
         if n != -1:
             hull = cv2.convexHull(cnt[n])
@@ -87,8 +98,9 @@ def main():
             cv2.imshow("Camera",im)
             cv2.imshow("Mask",mask2)
         # キーが押されたらループから抜ける
-        if cv2.waitKey(10) > 0:
-            cap.release()
+        if cv2.waitKey(10) == 27:
+            if LIVEFEED:
+                cap.release()
             cv2.destroyAllWindows()
             break
 
