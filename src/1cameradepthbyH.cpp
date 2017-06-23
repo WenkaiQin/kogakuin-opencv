@@ -28,7 +28,7 @@ Scalar g_max(70,255,255);
 Mat k = Mat::ones(5, 5, CV_8UC1);
 
 bool DEBUG = false;
-bool LIVEFEED = false;
+bool LIVEFEED = true;
 
 Mat colorTrack(Mat& im, Scalar h_min, Scalar h_max) {
 	Mat im_h, mask, im_c;
@@ -87,17 +87,26 @@ int main(int argc, char** argv) {
 	Mat im, mask1, mask2, mask;
 	vector<vector<Point> > cnt, hull;
 
-	int h1 = 175;
-	int L1 = 700;
-	int H = 167;							// 緑色のボトルの実際の高さ[mm]
+	// int h1 = 175;
+	// int L1 = 700;
+	// int H = 167;							// 緑色のボトルの実際の高さ[mm]
+	// int Z = 0;
+
+	int h1 = 230;
+	int L1 = 500;
+	int H = 160;							// 緑色のボトルの実際の高さ[mm]
 	int Z = 0;
 
 	VideoCapture cap(0);
+	namedWindow("Camera");
+	namedWindow("Mask");
 
 	while(1) {
 
 		// 入力画像の取得
-		if(LIVEFEED) cap >> im; else im = imread("online.jpg");
+		if(LIVEFEED) cap >> im; else im = imread("ochafar.jpg");
+
+		pyrDown(im, im, Size(im.cols/2, im.rows/2));
 
 		// 紅色のカラートラッキング
 		mask1 = colorTrack(im, g_min, g_max);
@@ -163,13 +172,15 @@ int main(int argc, char** argv) {
 
 			// 結果表示
 			circle(im, Point(cx,cy), 5, Scalar(0,0,255), -1);
-            putText(im, "X: " + to_string(X) + "[mm]", Point(30,20), 1, 1.5, Scalar(70,70,220), 2);
-            putText(im, "Y: " + to_string(Y) + "[mm]", Point(30,50), 1, 1.5, Scalar(70,70,220), 2);
-            putText(im, "Z: " + to_string(Z) + "[mm]", Point(30,80), 1, 1.5, Scalar(70,70,220), 2);
-            putText(im, "h2: " + to_string(h2) + "[pixcel]", Point(30,120), 1, 1.5, Scalar(220,70,90), 2);
-            putText(im, "L2: " + to_string(L2) + "[mm]", Point(30,160), 1, 1.5, Scalar(220,70,90), 2);
-            imshow("Camera", im);
-            imshow("Mask", mask2);
+			putText(im, "X: " + to_string(X) + "[mm]", Point(30,20), 1, 1.5, Scalar(70,70,220), 2);
+			putText(im, "Y: " + to_string(Y) + "[mm]", Point(30,50), 1, 1.5, Scalar(70,70,220), 2);
+			putText(im, "Z: " + to_string(Z) + "[mm]", Point(30,80), 1, 1.5, Scalar(70,70,220), 2);
+			putText(im, "h2: " + to_string(h2) + "[pixel]", Point(30,120), 1, 1.5, Scalar(220,70,90), 2);
+			// putText(im, "L2: " + to_string(L2) + "[mm]", Point(30,160), 1, 1.5, Scalar(220,70,90), 2);
+			putText(im, "L2: " + to_string(L2) + "[mm]", Point(30,160), 1, 1.5, Scalar(255,255,255), 2);
+
+			imshow("Camera", im);
+			imshow("Mask", mask2);
 		}
 
 

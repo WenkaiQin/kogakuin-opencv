@@ -1,13 +1,11 @@
-
-# makefile
-
-NAME := 1cameradepthbyH
+NAME := opencvtest
 
 CC := g++ # This is the main compiler
 SRCDIR := src
 BUILDDIR := build
 TARGETDIR := bin
-TARGET := $(TARGETDIR)/$(NAME)
+EXECUTABLE := $(NAME)
+TARGET := $(TARGETDIR)/$(EXECUTABLE)
 
 SRCEXT := cpp
 SOURCES := $(SRCDIR)/$(NAME).$(SRCEXT)
@@ -16,14 +14,14 @@ OBJECTS := $(BUILDDIR)/$(NAME).o
 # Special OpenCV Flags
 OPENCV := $(shell pkg-config --cflags --libs opencv)
 
-CFLAGS := -c -g #-std=c++11 #-Wall
+CFLAGS := -c -g #-Wall
 LIB := -L lib
 INC := -I include
 
 $(TARGET): $(OBJECTS)
 	@mkdir -p $(TARGETDIR)
 	@echo " Linking $<..."; $(CC) $(OPENCV) $^ -o $(TARGET)
-	@echo " Build complete."
+	@echo " Executable: $(TARGET)"
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(BUILDDIR)
@@ -32,13 +30,12 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 clean:
 	@echo " Cleaning $(TARGET)..."; $(RM) -r $(BUILDDIR) $(TARGET)
 
-purge:
-	@echo " Purging $(TARGETDIR)..."; $(RM) -r $(BUILDDIR) $(TARGETDIR)
-
 reset:
-	@echo " Resetting..."; make clean; make;
+	@echo " Resetting..."; make clean; make
 
-run:
-	@echo " Running $(TARGET)..."; ./$(TARGET)
+look:
+	@echo " SOURCES: $(SOURCES)"
+	@echo " OBJECTS: $(OBJECTS)"
+	@echo " OPENCV: $(OPENCV)"
 
 .PHONY: clean
