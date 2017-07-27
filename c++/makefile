@@ -1,7 +1,4 @@
-
-# makefile
-
-NAME := 1cameradepthbyH
+NAME := cascadedemo
 
 CC := g++ # This is the main compiler
 SRCDIR := src
@@ -42,3 +39,4 @@ run:
 	@echo " Running $(TARGET)..."; ./$(TARGET)
 
 .PHONY: clean
+

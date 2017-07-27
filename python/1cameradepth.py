@@ -75,7 +75,7 @@ def main():
         mask = cv2.bitwise_and(mask1,mask1,mask=mask2)
         mask = cv2.Canny(mask2,100,200)
         y,x = np.where(mask == 255)
-        if len(y)!= 0:
+        if len(y)!= 0: 
             # 対象物体の画像上の高さh2を計算
             ymax,ymin = np.amax(y),np.amin(y)
             h2 = ymax - ymin

@@ -9,9 +9,13 @@
 
 // Import OpenCV specific libraries.
 // #include "opencv2/opencv.hpp"
-#include <opencv2/core/core.hpp>
+#include <opencv2/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
+
+// #include <opencv2/core.hpp>
+// #include <opencv2/imgproc.hpp>
+// #include <opencv2/highgui.hpp>
 
 // Use both std and cv namespaces.
 using namespace std;
@@ -28,7 +32,7 @@ Scalar g_max(70,255,255);
 Mat k = Mat::ones(5, 5, CV_8UC1);
 
 bool DEBUG = false;
-bool LIVEFEED = true;
+bool LIVEFEED = false;
 
 Mat colorTrack(Mat& im, Scalar h_min, Scalar h_max) {
 	Mat im_h, mask, im_c;
@@ -104,8 +108,7 @@ int main(int argc, char** argv) {
 	while(1) {
 
 		// 入力画像の取得
-		if(LIVEFEED) cap >> im; else im = imread("ochafar.jpg");
-
+		if(LIVEFEED) cap >> im; else im = imread("../images/ochafar.jpg");
 		pyrDown(im, im, Size(im.cols/2, im.rows/2));
 
 		// 紅色のカラートラッキング
@@ -172,12 +175,12 @@ int main(int argc, char** argv) {
 
 			// 結果表示
 			circle(im, Point(cx,cy), 5, Scalar(0,0,255), -1);
-			putText(im, "X: " + to_string(X) + "[mm]", Point(30,20), 1, 1.5, Scalar(70,70,220), 2);
-			putText(im, "Y: " + to_string(Y) + "[mm]", Point(30,50), 1, 1.5, Scalar(70,70,220), 2);
-			putText(im, "Z: " + to_string(Z) + "[mm]", Point(30,80), 1, 1.5, Scalar(70,70,220), 2);
-			putText(im, "h2: " + to_string(h2) + "[pixel]", Point(30,120), 1, 1.5, Scalar(220,70,90), 2);
+			// putText(im, "X: " + to_string(X) + "[mm]", Point(30,20), 1, 1.5, Scalar(70,70,220), 2);
+			// putText(im, "Y: " + to_string(Y) + "[mm]", Point(30,50), 1, 1.5, Scalar(70,70,220), 2);
+			// putText(im, "Z: " + to_string(Z) + "[mm]", Point(30,80), 1, 1.5, Scalar(70,70,220), 2);
+			putText(im, "h2: " + to_string(h2) + "[pixel]", Point(30,20), 1, 1.5, Scalar(220,70,90), 2);
 			// putText(im, "L2: " + to_string(L2) + "[mm]", Point(30,160), 1, 1.5, Scalar(220,70,90), 2);
-			putText(im, "L2: " + to_string(L2) + "[mm]", Point(30,160), 1, 1.5, Scalar(255,255,255), 2);
+			putText(im, "L2: " + to_string(L2) + "[mm]", Point(30,50), 1, 1.5, Scalar(255,255,255), 2);
 
 			imshow("Camera", im);
 			imshow("Mask", mask2);
